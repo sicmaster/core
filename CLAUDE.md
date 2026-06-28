@@ -64,11 +64,11 @@
 
 ## 4. Tech Stack & Conventions
 
-- **Framework:** Laravel 12 (PHP)
+- **Framework:** Laravel 13 (PHP) — official React starter kit
 - **หน้าบ้าน:** Blade + Tailwind (server-render, SEO)
 - **หลังบ้าน:** Inertia + React 19 + TypeScript + Tailwind + shadcn/ui (จาก Laravel React starter kit)
 - **DB:** MySQL/MariaDB (default) ผ่าน Eloquent — DB-agnostic (ดู invariant 2)
-- **Auth:** Laravel built-in (จาก starter kit) + RBAC ผ่าน package มาตรฐาน (เช่น spatie/laravel-permission)
+- **Auth:** Laravel Fortify (built-in จาก starter kit: login/register/reset/email verification) + RBAC ผ่าน package มาตรฐาน (เช่น spatie/laravel-permission)
 - **Dev env:** Laravel Sail (Docker) — env ตรงกันทุกโปรเจกต์
 - **Deploy:** PHP hosting ปกติ (cPanel/VPS) — ชี้ root ไป `/public`, ตั้ง `.env`, รัน `migrate`
 - **Migration:** Laravel migration (forward-only ในทางปฏิบัติ — ไม่แก้ migration ที่ลูกค้า deploy แล้ว สร้างไฟล์ใหม่)
