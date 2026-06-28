@@ -17,11 +17,12 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(RoleAndPermissionSeeder::class);
 
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Seed admin user ตั้งต้น — ต้องมีไว้ login ครั้งแรก (มี role admin → มี permission access admin)
+        // หลังจากนี้ admin สร้าง/จัดการ user อื่นผ่านหน้า User Management (ADR-0002)
+        $admin = User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
         ]);
+        $admin->assignRole('admin');
     }
 }

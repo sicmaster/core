@@ -111,12 +111,14 @@ composer install
 
 ## Default Credentials
 
-After running `migrate --seed`, a test admin user is created:
+After running `migrate --seed`, an initial admin user is created:
 
-- **Email:** `test@example.com`
+- **Email:** `admin@example.com`
 - **Password:** `password`
 - **Role:** `admin`
+- **Login URL:** `/admin/login`
 
+> After first login, create and manage other users via **User Management** (`/admin/users`).
 > **Important:** Change these credentials in production!
 
 ## Project Structure
@@ -163,12 +165,10 @@ core/
 
 | Route | Description |
 |-------|-------------|
-| `/` | Welcome page (Blade) |
-| `/login` | Login page |
-| `/register` | Registration page |
-| `/dashboard` | User dashboard (after login) |
-| `/admin` | Admin dashboard |
-| `/admin/users` | User management (CRUD) |
+| `/` | Welcome page (Blade frontend) |
+| `/admin/login` | Admin login (no public registration — ADR-0002) |
+| `/admin` · `/admin/dashboard` | Admin dashboard |
+| `/admin/users` | User management (CRUD + role assignment) |
 
 ## Key Invariants
 
