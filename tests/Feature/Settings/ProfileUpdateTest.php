@@ -52,6 +52,7 @@ test('email verification status is unchanged when the email address is unchanged
 
 test('user can delete their account', function () {
     $user = User::factory()->create();
+    $userId = $user->id;
 
     $response = $this
         ->actingAs($user)
@@ -64,7 +65,14 @@ test('user can delete their account', function () {
         ->assertRedirect(route('home'));
 
     $this->assertGuest();
-    expect($user->fresh())->toBeNull();
+
+    // With SoftDeletes: normal query cannot find the user (soft-deleted).
+    expect(User::find($userId))->toBeNull();
+
+    // The record still exists in the database with deleted_at set.
+    $trashed = User::withTrashed()->find($userId);
+    expect($trashed)->not->toBeNull();
+    expect($trashed->deleted_at)->not->toBeNull();
 });
 
 test('correct password must be provided to delete account', function () {
