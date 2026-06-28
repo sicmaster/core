@@ -159,6 +159,7 @@
 | **Description** | เขียน/ปรับ README + cleanup code + prepare for review |
 | **DoD** | 1. README.md อัปเดต (วิธี setup, run, test)<br/>2. `.env.example` มี config ครบ<br/>3. ลบ code/file ที่ไม่ใช้<br/>4. ESLint/Prettier pass<br/>5. `sail artisan test` pass<br/>6. `npm run build` pass |
 | **Invariants** | ไม่แตะ |
+| **Status** | ✅ DONE |
 
 ---
 
@@ -274,4 +275,4 @@ Task 4 (Layout)    Task 5 (RBAC: admin+staff roles)
 ---
 
 *Last updated: 2026-06-28*
-*Status: PROPOSED (v2) - รอมนุษย์ approve*
+*Status: ✅ v0.0.1 COMPLETE — ทุก task (1-13) เสร็จ + test 95 passed, 4 skipped (2FA ปิด), 0 failed*

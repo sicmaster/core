@@ -9,7 +9,7 @@ A **reusable starter/foundation** for freelance web development projects with fr
 
 ## Features
 
-- **Authentication** with Laravel Breeze (login, register, password reset)
+- **Authentication** with Laravel Fortify (login, register, password reset, email verification) — official React starter kit
 - **RBAC** with Spatie Permission (roles & permissions)
 - **User Management** CRUD in admin panel
 - **Single-tenant** architecture (1 client = 1 deploy = 1 database)
@@ -44,12 +44,13 @@ cp .env.example .env
 
 # 3. Configure for Sail (edit .env)
 # Set these values:
-# DB_CONNECTION=mysql
-# DB_HOST=mysql
+# DB_CONNECTION=mariadb
+# DB_HOST=mariadb
 # DB_PORT=3306
 # DB_DATABASE=laravel
 # DB_USERNAME=sail
 # DB_PASSWORD=password
+# (queue/cache/session already set to 'database' driver — cPanel-safe)
 
 # 4. Install PHP dependencies and start Sail
 composer install
@@ -137,17 +138,17 @@ core/
 │   └── seeders/                # Database seeders
 ├── resources/
 │   ├── js/
-│   │   ├── components/         # Shared React components
+│   │   ├── components/         # Shared React components (+ ui/ = shadcn)
 │   │   ├── layouts/            # Layout components
 │   │   └── pages/
-│   │       ├── admin/          # Admin pages (React)
-│   │       ├── Auth/           # Auth pages (React)
-│   │       └── Profile/        # Profile pages (React)
+│   │       ├── admin/          # Admin pages (React/Inertia)
+│   │       ├── auth/           # Auth pages (from starter kit)
+│   │       └── settings/       # Settings pages (from starter kit)
 │   └── views/                  # Blade templates (frontend)
 ├── routes/
-│   ├── web.php                 # Frontend routes (/)
+│   ├── web.php                 # Frontend + dashboard routes
 │   ├── admin.php               # Admin routes (/admin/...)
-│   └── auth.php                # Authentication routes
+│   └── settings.php            # Settings routes (from starter kit)
 ├── tests/
 │   ├── Feature/                # Feature tests
 │   └── Unit/                   # Unit tests
