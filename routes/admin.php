@@ -18,4 +18,6 @@ Route::middleware(['auth', 'verified', 'permission:access admin'])->prefix('admi
     Route::inertia('dashboard', 'admin/dashboard')->name('dashboard');
 
     Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('users', [UserController::class, 'store'])->name('users.store');
 });
