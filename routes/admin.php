@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | Routes for the admin panel (backend).
-| All routes here require authentication and email verification.
-| Permission middleware will be added in Task 6.
+| All routes here require authentication, email verification,
+| and the "access admin" permission (role: admin or staff).
 |
 */
 
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'verified', 'permission:access admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::inertia('dashboard', 'admin/dashboard')->name('dashboard');
 });
