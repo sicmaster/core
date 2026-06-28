@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -72,5 +73,47 @@ class UserController extends Controller
 
         return to_route('admin.users.index')
             ->with('success', 'User created successfully.');
+    }
+
+    /**
+     * Show the form for editing an existing user.
+     *
+     * Soft-deleted users cannot be retrieved by route model binding (default behaviour).
+     */
+    public function edit(User $user): Response
+    {
+        return Inertia::render('admin/users/edit', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                // Send only the first role name; single-role-per-user model for v0.0.1 (diff #3).
+                'role' => $user->roles->pluck('name')->first() ?? '',
+            ],
+            'roles' => Role::orderBy('name')->pluck('name'),
+        ]);
+    }
+
+    /**
+     * Update the specified user in storage.
+     *
+     * Password updated only when provided (diff #2 — nullable).
+     * syncRoles replaces all roles atomically, preventing duplicate assignments (diff #3).
+     */
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
+    {
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
+
+        if ($request->filled('password')) {
+            $user->update(['password' => $request->password]);
+        }
+
+        $user->syncRoles([$request->role]);
+
+        return to_route('admin.users.index')
+            ->with('success', 'User updated successfully.');
     }
 }

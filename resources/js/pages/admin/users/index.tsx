@@ -1,4 +1,5 @@
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -9,7 +10,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import admin from '@/routes/admin';
-import { router } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import { Head } from '@inertiajs/react';
 import { useCallback, useState } from 'react';
 
@@ -117,13 +118,14 @@ export default function UserIndex({ users, search: initialSearch }: Props) {
                                 <TableHead>Email</TableHead>
                                 <TableHead>Role</TableHead>
                                 <TableHead>Created</TableHead>
+                                <TableHead className="w-24">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {users.data.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={4}
+                                        colSpan={5}
                                         className="text-muted-foreground py-10 text-center"
                                     >
                                         No users found.
@@ -156,6 +158,18 @@ export default function UserIndex({ users, search: initialSearch }: Props) {
                                         </TableCell>
                                         <TableCell className="text-muted-foreground">
                                             {formatDate(user.created_at)}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button
+                                                id={`edit-user-${user.id}`}
+                                                asChild
+                                                variant="ghost"
+                                                size="sm"
+                                            >
+                                                <Link href={admin.users.edit.url(user)}>
+                                                    Edit
+                                                </Link>
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))
