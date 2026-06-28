@@ -1,4 +1,5 @@
 import { Head } from '@inertiajs/react';
+import admin from '@/routes/admin';
 
 export default function AdminDashboard() {
     return (
@@ -17,8 +18,8 @@ export default function AdminDashboard() {
 AdminDashboard.layout = {
     breadcrumbs: [
         {
-            title: 'Admin Dashboard',
-            href: '/admin/dashboard',
+            title: 'Dashboard',
+            href: admin.dashboard(),
         },
     ],
 };

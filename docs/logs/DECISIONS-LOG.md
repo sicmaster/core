@@ -11,3 +11,5 @@
 | 2026-06-28 | Task 3 Auth Config | rootView ยังคืน 'app' ทั้งคู่ (เตรียม logic แยกไว้แต่ใช้ view เดียวตาม R1) | คืน 'admin' สำหรับ admin.* route ทันที | ยังไม่มี admin.blade.php แยก ตาม scaffold-plan R1 |
 | 2026-06-28 | Task 3 Auth Config | ใช้ `then:` callback ใน withRouting เพื่อ load admin.php | แก้ web: เป็น array หรือสร้าง RouteServiceProvider | then: เป็นวิธีที่ Laravel 13 แนะนำ สะอาดกว่า |
 | 2026-06-28 | Task 3 Auth Config | admin dashboard page ชื่อ pages/admin/dashboard.tsx (ตัวเล็กทั้งหมด) | Dashboard.tsx ตัวใหญ่ | invariant cPanel-safe case-sensitivity — ต้องตรงกับ official kit ที่ใช้ตัวเล็ก |
+| 2026-06-28 | Task 4 Admin Layout | reuse AppSidebar + AppLayout จาก kit แล้วเช็ค URL เพื่อแสดงเมนูต่างกัน | สร้าง AdminSidebar/AdminLayout ใหม่ | YAGNI — ไม่สร้าง component ซ้ำซ้อน, แค่แยก nav items ตาม context |
+| 2026-06-28 | Task 4 Admin Layout | Users เมนู placeholder ชี้ไป admin.dashboard() ก่อน | ไม่ใส่เมนู Users | Task 8 จะสร้าง route จริง ตอนนี้เตรียมเมนูไว้ก่อน |
