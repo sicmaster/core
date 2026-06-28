@@ -10,11 +10,18 @@ class HandleInertiaRequests extends Middleware
     /**
      * The root template that's loaded on the first page visit.
      *
-     * @see https://inertiajs.com/server-side-setup#root-template
+     * Returns different root view based on route:
+     * - 'admin.*' routes → 'admin' (prepared for future separation)
+     * - other routes → 'app'
      *
-     * @var string
+     * @see https://inertiajs.com/server-side-setup#root-template
      */
-    protected $rootView = 'app';
+    public function rootView(Request $request): string
+    {
+        // Invariant #4: แยกหน้าบ้าน/หลังบ้าน
+        // ตอนนี้ยังใช้ 'app' เดียว แต่วาง logic เตรียมแยกไว้แล้ว
+        return $request->routeIs('admin.*') ? 'app' : 'app';
+    }
 
     /**
      * Determines the current asset version.
