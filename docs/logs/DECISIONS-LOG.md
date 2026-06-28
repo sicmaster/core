@@ -13,3 +13,6 @@
 | 2026-06-28 | Task 3 Auth Config | admin dashboard page ชื่อ pages/admin/dashboard.tsx (ตัวเล็กทั้งหมด) | Dashboard.tsx ตัวใหญ่ | invariant cPanel-safe case-sensitivity — ต้องตรงกับ official kit ที่ใช้ตัวเล็ก |
 | 2026-06-28 | Task 4 Admin Layout | reuse AppSidebar + AppLayout จาก kit แล้วเช็ค URL เพื่อแสดงเมนูต่างกัน | สร้าง AdminSidebar/AdminLayout ใหม่ | YAGNI — ไม่สร้าง component ซ้ำซ้อน, แค่แยก nav items ตาม context |
 | 2026-06-28 | Task 4 Admin Layout | Users เมนู placeholder ชี้ไป admin.dashboard() ก่อน | ไม่ใส่เมนู Users | Task 8 จะสร้าง route จริง ตอนนี้เตรียมเมนูไว้ก่อน |
+| 2026-06-28 | Task 5 RBAC | ใช้ `firstOrCreate` + `syncPermissions` ใน seeder เพื่อ idempotency | `create()` ตรงๆ | `firstOrCreate` ป้องกัน duplicate key error เมื่อ seed ซ้ำ; `syncPermissions` overwrite ให้เสมอ |
+| 2026-06-28 | Task 5 RBAC | seed ใน `beforeEach` ของ test แทนที่จะพึ่ง `$this->seed()` ใน TestCase | override `setUp` ใน TestCase | test แต่ละ file ควรควบคุม data setup เองชัดเจน; RefreshDatabase ล้าง DB ทุก test |
+| 2026-06-28 | Task 5 RBAC | ไม่แตะ migration ของ spatie เลย ใช้ default ที่ publish มา | customize migration | migration ของ spatie ใช้ standard types แล้ว (id, string, unsignedBigInteger) — DB-agnostic ตาม invariant #2 |
