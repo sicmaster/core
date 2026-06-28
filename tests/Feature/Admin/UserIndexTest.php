@@ -122,3 +122,47 @@ test('search query is returned as a prop', function () {
                 ->where('search', 'foo')
         );
 });
+
+// ── Edge Cases ───────────────────────────────────────────────────────────────
+
+test('staff user can view the users index page', function () {
+    $staff = User::factory()->create();
+    $staff->assignRole('staff');
+
+    $this->actingAs($staff)
+        ->get(route('admin.users.index'))
+        ->assertOk();
+});
+
+test('search that matches nothing returns empty data', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    $this->actingAs($admin)
+        ->get(route('admin.users.index', ['search' => 'NonExistentUser123']))
+        ->assertOk()
+        ->assertInertia(
+            fn ($page) => $page
+                ->component('admin/users/index')
+                ->has('users.data', 0)
+        );
+});
+
+test('pagination returns correct data on page 2', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    // Create 20 more users (total 21 including admin)
+    // Page 1 should have 15, Page 2 should have 6
+    User::factory()->count(20)->create();
+
+    $this->actingAs($admin)
+        ->get(route('admin.users.index', ['page' => 2]))
+        ->assertOk()
+        ->assertInertia(
+            fn ($page) => $page
+                ->component('admin/users/index')
+                ->has('users.data', 6)
+                ->where('users.current_page', 2)
+        );
+});

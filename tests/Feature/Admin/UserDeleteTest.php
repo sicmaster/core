@@ -80,3 +80,17 @@ test('admin cannot delete their own account', function () {
         'deleted_at' => null,
     ]);
 });
+
+// ── Edge Cases ───────────────────────────────────────────────────────────────
+
+test('staff user can delete another user', function () {
+    $staff = User::factory()->create();
+    $staff->assignRole('staff');
+    $target = User::factory()->create();
+
+    $this->actingAs($staff)
+        ->delete(route('admin.users.destroy', $target))
+        ->assertRedirect(route('admin.users.index'));
+
+    $this->assertSoftDeleted('users', ['id' => $target->id]);
+});

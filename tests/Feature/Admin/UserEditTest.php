@@ -233,3 +233,41 @@ test('user without permission cannot put to update', function () {
         ])
         ->assertForbidden();
 });
+
+// ── Edge Cases ───────────────────────────────────────────────────────────────
+
+test('staff user can update another user', function () {
+    $staff = User::factory()->create();
+    $staff->assignRole('staff');
+    $target = User::factory()->create(['name' => 'Old Name']);
+    $target->assignRole('staff');
+
+    $this->actingAs($staff)
+        ->put(route('admin.users.update', $target), [
+            'name' => 'Updated By Staff',
+            'email' => $target->email,
+            'password' => '',
+            'password_confirmation' => '',
+            'role' => 'staff',
+        ])
+        ->assertRedirect(route('admin.users.index'));
+
+    $this->assertDatabaseHas('users', ['id' => $target->id, 'name' => 'Updated By Staff']);
+});
+
+test('submitting empty required fields returns validation errors (edit)', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+    $target = User::factory()->create();
+
+    $this->actingAs($admin)
+        ->put(route('admin.users.update', $target), [
+            'name' => '',
+            'email' => '',
+            'password' => '', // blank is ok for password in edit
+            'password_confirmation' => '',
+            'role' => '',
+        ])
+        ->assertSessionHasErrors(['name', 'email', 'role'])
+        ->assertSessionDoesntHaveErrors(['password']);
+});

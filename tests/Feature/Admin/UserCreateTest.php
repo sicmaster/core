@@ -184,3 +184,37 @@ test('user without permission cannot post to store', function () {
         ])
         ->assertForbidden();
 });
+
+// ── Edge Cases ───────────────────────────────────────────────────────────────
+
+test('staff user can create another user', function () {
+    $staff = User::factory()->create();
+    $staff->assignRole('staff');
+
+    $this->actingAs($staff)
+        ->post(route('admin.users.store'), [
+            'name' => 'Created By Staff',
+            'email' => 'bystaff@example.com',
+            'password' => 'Password1!',
+            'password_confirmation' => 'Password1!',
+            'role' => 'staff',
+        ])
+        ->assertRedirect(route('admin.users.index'));
+
+    $this->assertDatabaseHas('users', ['email' => 'bystaff@example.com']);
+});
+
+test('submitting empty fields returns multiple validation errors', function () {
+    $admin = User::factory()->create();
+    $admin->assignRole('admin');
+
+    $this->actingAs($admin)
+        ->post(route('admin.users.store'), [
+            'name' => '',
+            'email' => '',
+            'password' => '',
+            'password_confirmation' => '',
+            'role' => '',
+        ])
+        ->assertSessionHasErrors(['name', 'email', 'password', 'role']);
+});
