@@ -116,4 +116,21 @@ class UserController extends Controller
         return to_route('admin.users.index')
             ->with('success', 'User updated successfully.');
     }
+
+    /**
+     * Remove the specified user from storage (soft delete).
+     *
+     * Prevents the currently authenticated user from deleting themselves (security invariant).
+     */
+    public function destroy(User $user): RedirectResponse
+    {
+        if ($user->id === auth()->id()) {
+            abort(403, 'You cannot delete your own account.');
+        }
+
+        $user->delete();
+
+        return to_route('admin.users.index')
+            ->with('success', 'User deleted successfully.');
+    }
 }

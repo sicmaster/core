@@ -1,5 +1,15 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -10,7 +20,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import admin from '@/routes/admin';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, usePage } from '@inertiajs/react';
 import { Head } from '@inertiajs/react';
 import { useCallback, useState } from 'react';
 
@@ -63,6 +73,7 @@ function roleBadgeVariant(roleName: string): 'default' | 'secondary' | 'outline'
 }
 
 export default function UserIndex({ users, search: initialSearch }: Props) {
+    const { auth } = usePage().props;
     const [search, setSearch] = useState(initialSearch);
 
     const handleSearch = useCallback(
@@ -160,16 +171,53 @@ export default function UserIndex({ users, search: initialSearch }: Props) {
                                             {formatDate(user.created_at)}
                                         </TableCell>
                                         <TableCell>
-                                            <Button
-                                                id={`edit-user-${user.id}`}
-                                                asChild
-                                                variant="ghost"
-                                                size="sm"
-                                            >
-                                                <Link href={admin.users.edit.url(user)}>
-                                                    Edit
-                                                </Link>
-                                            </Button>
+                                            <div className="flex items-center gap-2">
+                                                <Button
+                                                    id={`edit-user-${user.id}`}
+                                                    asChild
+                                                    variant="ghost"
+                                                    size="sm"
+                                                >
+                                                    <Link href={admin.users.edit.url(user)}>
+                                                        Edit
+                                                    </Link>
+                                                </Button>
+
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <Button
+                                                            id={`delete-user-${user.id}`}
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                                            disabled={user.id === auth.user.id}
+                                                        >
+                                                            Delete
+                                                        </Button>
+                                                    </DialogTrigger>
+                                                    <DialogContent>
+                                                        <DialogHeader>
+                                                            <DialogTitle>Delete User</DialogTitle>
+                                                            <DialogDescription>
+                                                                Are you sure you want to delete {user.name}? This action can be undone by an administrator.
+                                                            </DialogDescription>
+                                                        </DialogHeader>
+                                                        <DialogFooter>
+                                                            <DialogClose asChild>
+                                                                <Button variant="outline">Cancel</Button>
+                                                            </DialogClose>
+                                                            <DialogClose asChild>
+                                                                <Button
+                                                                    variant="destructive"
+                                                                    onClick={() => router.delete(admin.users.destroy.url(user), { preserveScroll: true })}
+                                                                >
+                                                                    Delete User
+                                                                </Button>
+                                                            </DialogClose>
+                                                        </DialogFooter>
+                                                    </DialogContent>
+                                                </Dialog>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))
