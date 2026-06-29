@@ -20,22 +20,15 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import admin from '@/routes/admin';
-import { Link, router, usePage } from '@inertiajs/react';
-import { Head } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { useCallback, useState } from 'react';
 import { usePermissions } from '@/hooks/use-permissions';
 
-interface Role {
+interface RoleRow {
     id: number;
     name: string;
-}
-
-interface UserRow {
-    id: number;
-    name: string;
-    email: string;
-    roles: Role[];
-    created_at: string;
+    users_count: number;
+    permissions_count: number;
 }
 
 interface PaginationLink {
@@ -44,8 +37,8 @@ interface PaginationLink {
     active: boolean;
 }
 
-interface PaginatedUsers {
-    data: UserRow[];
+interface PaginatedRoles {
+    data: RoleRow[];
     links: PaginationLink[];
     current_page: number;
     last_page: number;
@@ -55,26 +48,11 @@ interface PaginatedUsers {
 }
 
 interface Props {
-    users: PaginatedUsers;
+    roles: PaginatedRoles;
     search: string;
 }
 
-function formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('th-TH', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
-}
-
-function roleBadgeVariant(roleName: string): 'default' | 'secondary' | 'outline' {
-    if (roleName === 'admin') return 'default';
-    if (roleName === 'staff') return 'secondary';
-    return 'outline';
-}
-
-export default function UserIndex({ users, search: initialSearch }: Props) {
-    const { auth } = usePage().props as any;
+export default function RoleIndex({ roles, search: initialSearch }: Props) {
     const { hasPermission } = usePermissions();
     const [search, setSearch] = useState(initialSearch);
 
@@ -82,7 +60,7 @@ export default function UserIndex({ users, search: initialSearch }: Props) {
         (value: string) => {
             setSearch(value);
             router.get(
-                admin.users.index.url(),
+                admin.roles.index.url(),
                 { search: value || undefined },
                 { preserveState: true, replace: true },
             );
@@ -92,29 +70,29 @@ export default function UserIndex({ users, search: initialSearch }: Props) {
 
     return (
         <>
-            <Head title="Users" />
+            <Head title="Roles" />
 
             <div className="flex h-full flex-1 flex-col gap-6 p-4">
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-semibold">Users</h1>
+                        <h1 className="text-2xl font-semibold">Roles</h1>
                         <p className="text-muted-foreground text-sm">
-                            Manage system users and their roles.
+                            Manage user roles and permissions.
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
-                        {hasPermission('users.read') && (
-                            <Button id="export-users-button" variant="outline" asChild>
-                                <a href={admin.users.export.url()} target="_blank" rel="noreferrer">
+                        {hasPermission('roles.read') && (
+                            <Button id="export-roles-button" variant="outline" asChild>
+                                <a href={admin.roles.export.url()} target="_blank" rel="noreferrer">
                                     Export CSV
                                 </a>
                             </Button>
                         )}
-                        {hasPermission('users.create') && (
-                            <Button id="create-user-button" asChild>
-                                <Link href={admin.users.create.url()}>
-                                    Create User
+                        {hasPermission('roles.create') && (
+                            <Button id="create-role-button" asChild>
+                                <Link href={admin.roles.create.url()}>
+                                    Create Role
                                 </Link>
                             </Button>
                         )}
@@ -124,16 +102,16 @@ export default function UserIndex({ users, search: initialSearch }: Props) {
                 {/* Search */}
                 <div className="flex items-center gap-4">
                     <Input
-                        id="user-search"
+                        id="role-search"
                         type="search"
-                        placeholder="Search by name or email…"
+                        placeholder="Search by name…"
                         className="max-w-sm"
                         value={search}
                         onChange={(e) => handleSearch(e.target.value)}
                     />
-                    {users.total > 0 && (
+                    {roles.total > 0 && (
                         <span className="text-muted-foreground text-sm">
-                            {users.from}–{users.to} of {users.total} users
+                            {roles.from}–{roles.to} of {roles.total} roles
                         </span>
                     )}
                 </div>
@@ -144,83 +122,70 @@ export default function UserIndex({ users, search: initialSearch }: Props) {
                         <TableHeader>
                             <TableRow>
                                 <TableHead>Name</TableHead>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Role</TableHead>
-                                <TableHead>Created</TableHead>
+                                <TableHead>Users</TableHead>
+                                <TableHead>Permissions</TableHead>
                                 <TableHead className="w-24">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {users.data.length === 0 ? (
+                            {roles.data.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={5}
+                                        colSpan={4}
                                         className="text-muted-foreground py-10 text-center"
                                     >
-                                        No users found.
+                                        No roles found.
                                     </TableCell>
                                 </TableRow>
                             ) : (
-                                users.data.map((user) => (
-                                    <TableRow key={user.id}>
+                                roles.data.map((role) => (
+                                    <TableRow key={role.id}>
                                         <TableCell className="font-medium">
-                                            {user.name}
-                                        </TableCell>
-                                        <TableCell className="text-muted-foreground">
-                                            {user.email}
+                                            {role.name}
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex flex-wrap gap-1">
-                                                {user.roles.length === 0 ? (
-                                                    <Badge variant="outline">—</Badge>
-                                                ) : (
-                                                    user.roles.map((role) => (
-                                                        <Badge
-                                                            key={role.id}
-                                                            variant={roleBadgeVariant(role.name)}
-                                                        >
-                                                            {role.name}
-                                                        </Badge>
-                                                    ))
-                                                )}
-                                            </div>
+                                            <Badge variant="secondary">
+                                                {role.users_count}
+                                            </Badge>
                                         </TableCell>
-                                        <TableCell className="text-muted-foreground">
-                                            {formatDate(user.created_at)}
+                                        <TableCell>
+                                            <Badge variant="outline">
+                                                {role.permissions_count}
+                                            </Badge>
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2">
-                                                {hasPermission('users.update') && (
+                                                {hasPermission('roles.update') && (
                                                     <Button
-                                                        id={`edit-user-${user.id}`}
+                                                        id={`edit-role-${role.id}`}
                                                         asChild
                                                         variant="ghost"
                                                         size="sm"
                                                     >
-                                                        <Link href={admin.users.edit.url(user)}>
+                                                        <Link href={admin.roles.edit.url(role)}>
                                                             Edit
                                                         </Link>
                                                     </Button>
                                                 )}
 
-                                                {hasPermission('users.delete') && (
+                                                {hasPermission('roles.delete') && (
                                                     <Dialog>
                                                         <DialogTrigger asChild>
                                                             <Button
-                                                                id={`delete-user-${user.id}`}
+                                                                id={`delete-role-${role.id}`}
                                                                 variant="ghost"
                                                                 size="sm"
                                                                 className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                                                                disabled={user.id === auth.user.id}
+                                                                disabled={role.name === 'admin' || role.users_count > 0}
                                                             >
                                                                 Delete
                                                             </Button>
                                                         </DialogTrigger>
                                                         <DialogContent>
                                                             <DialogHeader>
-                                                                <DialogTitle>Delete User</DialogTitle>
+                                                                <DialogTitle>Delete Role</DialogTitle>
                                                                 <DialogDescription>
-                                                                    Are you sure you want to delete {user.name}? This action can be undone by an administrator.
+                                                                    Are you sure you want to delete the '{role.name}' role? This action cannot be undone.
                                                                 </DialogDescription>
                                                             </DialogHeader>
                                                             <DialogFooter>
@@ -230,9 +195,9 @@ export default function UserIndex({ users, search: initialSearch }: Props) {
                                                                 <DialogClose asChild>
                                                                     <Button
                                                                         variant="destructive"
-                                                                        onClick={() => router.delete(admin.users.destroy.url(user), { preserveScroll: true })}
+                                                                        onClick={() => router.delete(admin.roles.destroy.url(role), { preserveScroll: true })}
                                                                     >
-                                                                        Delete User
+                                                                        Delete Role
                                                                     </Button>
                                                                 </DialogClose>
                                                             </DialogFooter>
@@ -249,14 +214,14 @@ export default function UserIndex({ users, search: initialSearch }: Props) {
                 </div>
 
                 {/* Pagination */}
-                {users.last_page > 1 && (
+                {roles.last_page > 1 && (
                     <nav
                         aria-label="Pagination"
                         className="flex items-center justify-center gap-1"
                     >
-                        {users.links.map((link, i) => {
+                        {roles.links.map((link, i) => {
                             const isFirst = i === 0;
-                            const isLast = i === users.links.length - 1;
+                            const isLast = i === roles.links.length - 1;
                             const isPrev = isFirst;
                             const isNext = isLast;
 
@@ -298,11 +263,11 @@ export default function UserIndex({ users, search: initialSearch }: Props) {
     );
 }
 
-UserIndex.layout = {
+RoleIndex.layout = {
     breadcrumbs: [
         {
-            title: 'Users',
-            href: admin.users.index(),
+            title: 'Roles',
+            href: admin.roles.index(),
         },
     ],
 };
