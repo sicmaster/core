@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ExportController;
+use App\Http\Controllers\Admin\SystemSettingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -74,4 +75,13 @@ Route::middleware(['auth', 'verified', 'permission:access admin'])->prefix('admi
     Route::get('roles-export', [ExportController::class, 'exportRoles'])
         ->middleware('permission:roles.read')
         ->name('roles.export');
+        
+    // System Settings
+    Route::get('system-settings', [SystemSettingController::class, 'edit'])
+        ->middleware('permission:settings.read')
+        ->name('system-settings.edit');
+        
+    Route::put('system-settings', [SystemSettingController::class, 'update'])
+        ->middleware('permission:settings.update')
+        ->name('system-settings.update');
 });

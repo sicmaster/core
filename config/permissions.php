@@ -14,6 +14,7 @@ return [
     'resources' => [
         'users',
         'roles',
+        'settings',
     ],
 
     /*

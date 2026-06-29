@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { LayoutGrid, Users, Shield } from 'lucide-react';
+import { LayoutGrid, Users, Shield, Settings } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
@@ -44,6 +44,11 @@ const adminNavItems: NavItem[] = [
         href: admin.roles.index(),
         icon: Shield,
     },
+    {
+        title: 'System Settings',
+        href: admin.systemSettings.edit(),
+        icon: Settings,
+    },
 ];
 
 export function AppSidebar() {
@@ -55,6 +60,7 @@ export function AppSidebar() {
     const filteredAdminNavItems = adminNavItems.filter((item) => {
         if (item.title === 'Users') return hasPermission('users.read');
         if (item.title === 'Roles') return hasPermission('roles.read');
+        if (item.title === 'System Settings') return hasPermission('settings.read');
         return true; // Dashboard or other items
     });
 
