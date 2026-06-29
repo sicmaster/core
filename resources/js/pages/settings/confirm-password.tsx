@@ -1,6 +1,8 @@
 import { Form, Head } from '@inertiajs/react';
+import { edit } from '@/routes/security';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
+import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
@@ -11,7 +13,14 @@ export default function ConfirmPassword() {
         <>
             <Head title="Confirm password" />
 
-            <Form {...store.form()} resetOnSuccess={['password']}>
+            <div className="space-y-6">
+                <Heading
+                    variant="small"
+                    title="Confirm password"
+                    description="This is a secure area of the application. Please confirm your password before continuing."
+                />
+
+                <Form {...store.form()} resetOnSuccess={['password']}>
                 {({ processing, errors }) => (
                     <div className="space-y-6">
                         <div className="grid gap-2">
@@ -40,12 +49,19 @@ export default function ConfirmPassword() {
                     </div>
                 )}
             </Form>
+            </div>
         </>
     );
 }
 
 ConfirmPassword.layout = {
-    title: 'Confirm password',
-    description:
-        'This is a secure area of the application. Please confirm your password before continuing.',
+    breadcrumbs: [
+        {
+            title: 'Security settings',
+            href: edit(),
+        },
+        {
+            title: 'Confirm Password',
+        },
+    ],
 };

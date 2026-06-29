@@ -173,10 +173,6 @@ export default function UserCreate({ roles }: Props) {
 UserCreate.layout = {
     breadcrumbs: [
         {
-            title: 'Dashboard',
-            href: admin.dashboard(),
-        },
-        {
             title: 'Users',
             href: admin.users.index(),
         },

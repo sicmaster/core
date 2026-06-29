@@ -29,7 +29,7 @@ const sidebarNavItems: NavItem[] = [
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
-    const { isCurrentOrParentUrl } = useCurrentUrl();
+    const { currentUrl, isCurrentOrParentUrl } = useCurrentUrl();
 
     return (
         <div className="px-4 py-6">
@@ -51,7 +51,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                 variant="ghost"
                                 asChild
                                 className={cn('w-full justify-start', {
-                                    'bg-muted': isCurrentOrParentUrl(item.href),
+                                    'bg-muted': item.isActive ?? (isCurrentOrParentUrl(item.href) || (item.title === 'Security' && currentUrl === '/admin/settings/user/confirm-password')),
                                 })}
                             >
                                 <Link href={item.href}>

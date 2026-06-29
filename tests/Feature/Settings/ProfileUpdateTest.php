@@ -1,9 +1,17 @@
 <?php
 
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
+use Spatie\Permission\PermissionRegistrar;
+
+beforeEach(function () {
+    $this->seed(RoleAndPermissionSeeder::class);
+    app()[PermissionRegistrar::class]->forgetCachedPermissions();
+});
 
 test('profile page is displayed', function () {
     $user = User::factory()->create();
+    $user->assignRole('admin');
 
     $response = $this
         ->actingAs($user)
@@ -14,6 +22,7 @@ test('profile page is displayed', function () {
 
 test('profile information can be updated', function () {
     $user = User::factory()->create();
+    $user->assignRole('admin');
 
     $response = $this
         ->actingAs($user)
@@ -35,6 +44,7 @@ test('profile information can be updated', function () {
 
 test('email verification status is unchanged when the email address is unchanged', function () {
     $user = User::factory()->create();
+    $user->assignRole('admin');
 
     $response = $this
         ->actingAs($user)
@@ -52,6 +62,7 @@ test('email verification status is unchanged when the email address is unchanged
 
 test('user can delete their account', function () {
     $user = User::factory()->create();
+    $user->assignRole('admin');
     $userId = $user->id;
 
     $response = $this
@@ -77,6 +88,7 @@ test('user can delete their account', function () {
 
 test('correct password must be provided to delete account', function () {
     $user = User::factory()->create();
+    $user->assignRole('admin');
 
     $response = $this
         ->actingAs($user)

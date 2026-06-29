@@ -184,10 +184,6 @@ export default function UserEdit({ user, roles }: Props) {
 UserEdit.layout = {
     breadcrumbs: [
         {
-            title: 'Dashboard',
-            href: admin.dashboard(),
-        },
-        {
             title: 'Users',
             href: admin.users.index(),
         },

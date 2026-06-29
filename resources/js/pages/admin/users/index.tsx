@@ -101,6 +101,11 @@ export default function UserIndex({ users, search: initialSearch }: Props) {
                             Manage system users and their roles.
                         </p>
                     </div>
+                    <Button id="create-user-button" asChild>
+                        <Link href={admin.users.create.url()}>
+                            Create User
+                        </Link>
+                    </Button>
                 </div>
 
                 {/* Search */}
@@ -278,10 +283,6 @@ export default function UserIndex({ users, search: initialSearch }: Props) {
 
 UserIndex.layout = {
     breadcrumbs: [
-        {
-            title: 'Dashboard',
-            href: admin.dashboard(),
-        },
         {
             title: 'Users',
             href: admin.users.index(),
