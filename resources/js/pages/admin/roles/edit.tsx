@@ -250,7 +250,7 @@ RoleEdit.layout = {
         },
         {
             title: 'Edit',
-            href: admin.roles.edit(), // Can just omit exact URL since it's just visual text
+            href: '',
         },
     ],
 };
