@@ -236,7 +236,7 @@ test('user without permission cannot put to update', function () {
 
 // ── Edge Cases ───────────────────────────────────────────────────────────────
 
-test('staff user can update another user', function () {
+test('staff user cannot update another user', function () {
     $staff = User::factory()->create();
     $staff->assignRole('staff');
     $target = User::factory()->create(['name' => 'Old Name']);
@@ -250,9 +250,9 @@ test('staff user can update another user', function () {
             'password_confirmation' => '',
             'role' => 'staff',
         ])
-        ->assertRedirect(route('admin.users.index'));
+        ->assertForbidden();
 
-    $this->assertDatabaseHas('users', ['id' => $target->id, 'name' => 'Updated By Staff']);
+    $this->assertDatabaseHas('users', ['id' => $target->id, 'name' => 'Old Name']);
 });
 
 test('submitting empty required fields returns validation errors (edit)', function () {

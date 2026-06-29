@@ -187,7 +187,7 @@ test('user without permission cannot post to store', function () {
 
 // ── Edge Cases ───────────────────────────────────────────────────────────────
 
-test('staff user can create another user', function () {
+test('staff user cannot create another user', function () {
     $staff = User::factory()->create();
     $staff->assignRole('staff');
 
@@ -199,9 +199,7 @@ test('staff user can create another user', function () {
             'password_confirmation' => 'Password1!',
             'role' => 'staff',
         ])
-        ->assertRedirect(route('admin.users.index'));
-
-    $this->assertDatabaseHas('users', ['email' => 'bystaff@example.com']);
+        ->assertForbidden();
 });
 
 test('submitting empty fields returns multiple validation errors', function () {
