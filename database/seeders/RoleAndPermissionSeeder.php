@@ -26,6 +26,27 @@ class RoleAndPermissionSeeder extends Seeder
             ['name' => 'access admin', 'guard_name' => 'web']
         );
 
+        $resources = config('permissions.resources', []);
+        $actions = config('permissions.actions', []);
+
+        $allPermissions = collect([$accessAdmin]);
+        $staffPermissions = collect([$accessAdmin]);
+
+        foreach ($resources as $resource) {
+            foreach ($actions as $action) {
+                $permissionName = "{$resource}.{$action}";
+                $permission = Permission::firstOrCreate(
+                    ['name' => $permissionName, 'guard_name' => 'web']
+                );
+
+                $allPermissions->push($permission);
+
+                if ($action === 'read') {
+                    $staffPermissions->push($permission);
+                }
+            }
+        }
+
         // --- Roles ---
         $adminRole = Role::firstOrCreate(
             ['name' => 'admin', 'guard_name' => 'web']
@@ -36,7 +57,7 @@ class RoleAndPermissionSeeder extends Seeder
         );
 
         // --- Assign permissions (syncPermissions is idempotent) ---
-        $adminRole->syncPermissions([$accessAdmin]);
-        $staffRole->syncPermissions([$accessAdmin]);
+        $adminRole->syncPermissions($allPermissions);
+        $staffRole->syncPermissions($staffPermissions);
     }
 }
